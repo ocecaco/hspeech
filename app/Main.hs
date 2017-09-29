@@ -4,8 +4,7 @@ module Main (main) where
 import Data.Foldable
 import Control.Applicative
 import Data.Text (Text)
-import Data.Maybe
-import qualified Data.Text.IO as TIO
+import Data.Aeson
 
 import Grammar
 
@@ -43,4 +42,4 @@ myRule :: Element (IO ())
 myRule = word "Quinn" *> (sequence_ <$> some (pressKey <|> pressNumbers <|> test))
 
 main :: IO ()
-main = fromMaybe (return ()) $ fmap TIO.putStrLn (pretty $ myRule)
+main = print (fmap encode $ elementSyntax myRule)

@@ -16,8 +16,12 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Grammar
+  other-modules:       Grammar.Dragon
+                     , Grammar.Parse
   build-depends:       base >= 4.7 && < 5
                      , text
+                     , aeson
+                     , bytestring
   default-language:    Haskell2010
 
 executable hspeech-exe
@@ -27,6 +31,8 @@ executable hspeech-exe
   build-depends:       base
                      , text
                      , hspeech
+                     , aeson
+                     , bytestring
   default-language:    Haskell2010
 
 test-suite hspeech-test
