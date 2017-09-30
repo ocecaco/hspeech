@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Grammar.Dragon
-  ( DragonElement(..)
+  ( DragonSyntax(..)
   )
 where
 
@@ -8,16 +8,16 @@ import Data.Aeson
 import Data.Text (Text)
 import Grammar.Parse
 
-data DragonElement = Sequence DragonElement DragonElement
-                   | Alternative DragonElement DragonElement
-                   | Repetition DragonElement
-                   | Optional DragonElement
-                   | Word Text
-                   | List Text
-                   | RuleRef Text
-                   | Dictation
-                   | DictationWord
-                   | SpellingLetter
+data DragonSyntax = Sequence DragonSyntax DragonSyntax
+                  | Alternative DragonSyntax DragonSyntax
+                  | Repetition DragonSyntax
+                  | Optional DragonSyntax
+                  | Word Text
+                  | List Text
+                  | RuleRef Int
+                  | Dictation
+                  | DictationWord
+                  | SpellingLetter
 
 typedObject :: Text -> [(Text, Value)] -> Value
 typedObject tag fields = object (typeTag tag : fields)
@@ -26,7 +26,7 @@ typedObject tag fields = object (typeTag tag : fields)
 capture :: ToJSON v => CaptureTag -> v -> Value
 capture tag child = typedObject "capture" ["name" .= renderTag tag, "child" .= child]
 
-instance ToJSON DragonElement where
+instance ToJSON DragonSyntax where
   toJSON (Sequence left right) = capture TSequence $ typedObject "sequence" ["children" .= [left, right]]
   toJSON (Alternative left right) = typedObject "alternative" ["children" .= [capture TAlternativeLeft left, capture TAlternativeRight right]]
   toJSON (Repetition x) = capture TRepetition $ typedObject "repetition" ["child" .= x]

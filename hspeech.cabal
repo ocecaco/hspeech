@@ -22,6 +22,8 @@ library
                      , text
                      , aeson
                      , bytestring
+                     , mtl
+                     , containers
   default-language:    Haskell2010
 
 executable hspeech-exe
