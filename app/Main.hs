@@ -14,32 +14,15 @@ meaning w v = word w *> pure v
 data Key = A | B | C
   deriving (Show)
 
-key :: Element Key
-key = asum
+ruleKey :: Rule Key
+ruleKey = createRule $ asum
   [ "arch" `meaning` A
   , "brov" `meaning` B
   , "char" `meaning` C
   ]
 
-pressKey :: Element (IO ())
-pressKey = print <$> (word "press" *> key)
-
-number :: Element Int
-number = asum
-  [ "one" `meaning` 1
-  , "two" `meaning` 2
-  , "three" `meaning` 3
-  ]
-
-pressNumbers :: Element (IO ())
-pressNumbers = mapM_ print <$> (word "numbers" *> optional (word "hello") *> (some number <* word "bow"))
-
-test :: Element (IO ())
-test = fmap print $ some (word "say" *> dictated <* word "stop")
-  where dictated = wordContext (\t _ -> t) dictation
-
-myRule :: Element (IO ())
-myRule = word "Quinn" *> (sequence_ <$> some (pressKey <|> pressNumbers <|> test))
-
 main :: IO ()
-main = print (fmap encode $ elementSyntax myRule)
+main = print (grammarSyntax grammar)
+  where grammar =
+          withRule ruleKey $ \key ->
+            createGrammar [(A, word "hello" *> ruleRef key *> ruleRef key)]

@@ -14,10 +14,11 @@ data DragonSyntax = Sequence DragonSyntax DragonSyntax
                   | Optional DragonSyntax
                   | Word Text
                   | List Text
-                  | RuleRef Int
+                  | RuleRef Text
                   | Dictation
                   | DictationWord
                   | SpellingLetter
+                  deriving (Show)
 
 typedObject :: Text -> [(Text, Value)] -> Value
 typedObject tag fields = object (typeTag tag : fields)
